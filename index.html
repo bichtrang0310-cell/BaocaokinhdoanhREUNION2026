@@ -204,7 +204,7 @@ tbody td.text-right{text-align:right}
             </div>
             <p id="refresh-timer" class="refresh-timer"></p>
             <div id="debug-panel" class="debug-panel"></div>
-            <div class="import-help"><strong>Hướng dẫn:</strong><br>1. Dán link Google Sheet lần đầu<br>2. Từ lần sau mở file sẽ <em style="color:var(--accent)">tự động tải</em><br>3. Nhấn 🗑️ để xoá link đã lưu</div>
+            <div class="import-help"><strong>📌 Link Google Sheet cố định</strong><br>Dữ liệu tự động tải khi mở file.<br>Bật "Tự động cập nhật" để nhận đơn mới realtime.</div>
         </div>
     </div>
 </div>
@@ -679,16 +679,10 @@ function exportToExcel(){if(!currentData.length)return;const d=[['STT','Đơn h�
 function clearSavedUrl(){try{localStorage.removeItem('reunion_sheet_url');}catch(e){}document.getElementById('sheet-url').value='';setS('🗑️ Đã xoá link lưu sẵn','success');}
 
 window.addEventListener('load',()=>{
-    // Try to load saved sheet URL
-    let savedUrl='';
-    try{savedUrl=localStorage.getItem('reunion_sheet_url')||'';}catch(e){}
-    if(savedUrl){
-        document.getElementById('sheet-url').value=savedUrl;
-        // Auto load immediately
-        setTimeout(()=>loadFromGoogleSheet(),300);
-    }else{
-        document.getElementById('kpi-container').innerHTML=`<div style="grid-column:1/-1"><div class="placeholder-state"><div class="ph-icon">📊</div><h3>BÁO CÁO KINH DOANH REUNION</h3><p>Dán link Google Sheet lần đầu — từ lần sau sẽ tự động tải khi mở!</p></div></div>`;
-    }
+    // Hardcoded Google Sheet URL - REUNION
+    const FIXED_URL='https://docs.google.com/spreadsheets/d/1C96yod9CNb8e_ANJTsDsjcJE9PzwI4dmG3gFhbLBQGI/edit?gid=1234912962#gid=1234912962';
+    document.getElementById('sheet-url').value=FIXED_URL;
+    setTimeout(()=>loadFromGoogleSheet(),300);
 });
 </script>
 </body>
