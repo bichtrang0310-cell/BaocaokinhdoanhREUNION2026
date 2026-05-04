@@ -137,7 +137,7 @@ tbody td.text-right{text-align:right}
 .progress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-top:4px}
 
 /* TOAST NOTIFICATION */
-.toast-container{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast-container{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:calc(100vw - 40px)}
 .toast{pointer-events:all;background:#ffffff;border:1px solid var(--accent);border-radius:14px;padding:16px 20px;min-width:340px;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.12);animation:toastIn .4s ease;cursor:pointer;transition:opacity .3s,transform .3s}
 .toast.hiding{opacity:0;transform:translateX(100px)}
 @keyframes toastIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
@@ -159,8 +159,70 @@ tbody td.text-right{text-align:right}
 .placeholder-state .ph-icon{font-size:52px;margin-bottom:14px;opacity:.4}
 .placeholder-state h3{font-size:17px;font-weight:600;color:var(--t2);margin-bottom:6px}
 .placeholder-state p{font-size:13px;color:var(--t3);max-width:380px;line-height:1.6}
+/* MOBILE HAMBURGER */
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;z-index:100;background:var(--card);border-bottom:1px solid var(--bdr);padding:12px 16px;align-items:center;justify-content:space-between}
+.mobile-header h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.hamburger{width:36px;height:36px;border:1px solid var(--bdr);border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;color:var(--t2)}
+.hamburger:hover{border-color:var(--accent);color:var(--accent)}
+
+/* MOBILE SIDEBAR OVERLAY */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200}
+.sidebar-overlay.show{display:block}
+
+/* MOBILE BOTTOM NAV */
+.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--card);border-top:1px solid var(--bdr);padding:6px 8px 10px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.mobile-bottom-nav::-webkit-scrollbar{display:none}
+.mobile-nav-items{display:flex;gap:4px;justify-content:space-around;min-width:100%}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border:none;background:none;color:var(--t3);font-size:9px;font-weight:500;font-family:inherit;cursor:pointer;border-radius:8px;transition:.15s;flex-shrink:0}
+.mobile-nav-btn .mnav-icon{font-size:18px}
+.mobile-nav-btn.active{color:var(--accent);background:var(--accent-g)}
+.mobile-nav-btn:hover{color:var(--accent)}
+
 @media(max-width:1100px){.chart-grid-2,.chart-grid-eq{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.sidebar{display:none}.kpi-grid{grid-template-columns:1fr 1fr}.modal{width:95vw}.modal-grid{grid-template-columns:1fr}}
+@media(max-width:768px){
+    .sidebar{position:fixed;left:-290px;top:0;bottom:0;z-index:300;transition:left .3s ease;box-shadow:none}
+    .sidebar.open{left:0;box-shadow:8px 0 30px rgba(0,0,0,.15)}
+    .mobile-header{display:flex}
+    .mobile-bottom-nav{display:block}
+    .main{margin-top:56px;margin-bottom:60px}
+    .main .topbar{display:none}
+    .content{padding:14px}
+    .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .kpi-card{padding:14px}
+    .kpi-value{font-size:20px}
+    .kpi-label{font-size:9px}
+    .kpi-sub{font-size:9px}
+    .chart-grid{gap:12px;margin-bottom:16px}
+    .chart-card{padding:14px}
+    .chart-card h3{font-size:13px;margin-bottom:12px}
+    .chart-wrapper{height:220px}
+    .table-header{padding:12px 14px;flex-direction:column;align-items:stretch}
+    .table-search{width:100%}
+    .table-scroll{max-height:calc(100vh - 220px)}
+    table{font-size:11px}
+    thead th{padding:8px 10px;font-size:9px}
+    tbody td{padding:8px 10px}
+    .modal{width:96vw;max-height:90vh;border-radius:16px}
+    .modal-head{padding:16px 18px 12px}
+    .modal-head h3{font-size:15px}
+    .modal-body{padding:14px 18px 18px}
+    .modal-grid{grid-template-columns:1fr;gap:8px}
+    .modal-field{padding:10px 12px}
+    .modal-field-value{font-size:14px}
+    .toast{min-width:auto;max-width:calc(100vw - 24px);margin-right:12px}
+    .top-customer-item{padding:10px 12px;gap:10px}
+    .top-rank{width:26px;height:26px;font-size:11px}
+    .top-customer-name{font-size:12px}
+    .top-customer-revenue{font-size:13px}
+    body{overflow:auto;height:auto}
+    .layout{flex-direction:column;height:auto;min-height:100vh}
+}
+@media(max-width:380px){
+    .kpi-grid{grid-template-columns:1fr}
+    .kpi-value{font-size:22px}
+    .mobile-nav-btn{padding:6px 6px;font-size:8px}
+    .mobile-nav-btn .mnav-icon{font-size:16px}
+}
 </style>
 </head>
 <body>
@@ -175,17 +237,36 @@ tbody td.text-right{text-align:right}
 <div class="modal-body" id="modal-body"></div>
 </div></div>
 
+<!-- MOBILE HEADER -->
+<div class="mobile-header" id="mobile-header">
+    <h1><span class="logo-icon" style="width:28px;height:28px;font-size:14px">📊</span> REUNION</h1>
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mobile-bottom-nav">
+    <div class="mobile-nav-items">
+        <button class="mobile-nav-btn active" onclick="mobileSwitchTab(0,this)"><span class="mnav-icon">📊</span>Tổng quan</button>
+        <button class="mobile-nav-btn" onclick="mobileSwitchTab(1,this)"><span class="mnav-icon">🚚</span>Trạng thái</button>
+        <button class="mobile-nav-btn" onclick="mobileSwitchTab(2,this)"><span class="mnav-icon">💰</span>Doanh thu</button>
+        <button class="mobile-nav-btn" onclick="mobileSwitchTab(3,this)"><span class="mnav-icon">👥</span>Top KH</button>
+        <button class="mobile-nav-btn" onclick="mobileSwitchTab(4,this)"><span class="mnav-icon">🚛</span>Phí VC</button>
+        <button class="mobile-nav-btn" onclick="mobileSwitchTab(5,this)"><span class="mnav-icon">📋</span>Chi tiết</button>
+    </div>
+</div>
+
 <div class="layout">
 <div class="sidebar">
     <div class="sidebar-brand"><h1><span class="logo-icon">📊</span> REUNION</h1><p>Báo cáo kinh doanh</p></div>
     <div class="sidebar-nav">
-        <button class="nav-item active" onclick="switchTab(0,this)"><span class="nav-icon">📊</span> Tổng quan</button>
-        <button class="nav-item" onclick="switchTab(1,this)"><span class="nav-icon">🚚</span> Trạng thái đơn</button>
-        <button class="nav-item" onclick="switchTab(2,this)"><span class="nav-icon">💰</span> Doanh thu</button>
-        <button class="nav-item" onclick="switchTab(3,this)"><span class="nav-icon">👥</span> Top khách hàng</button>
-        <button class="nav-item" onclick="switchTab(4,this)"><span class="nav-icon">🚛</span> Chi phí vận chuyển</button>
+        <button class="nav-item active" onclick="switchTab(0,this);closeSidebarMobile()"><span class="nav-icon">📊</span> Tổng quan</button>
+        <button class="nav-item" onclick="switchTab(1,this);closeSidebarMobile()"><span class="nav-icon">🚚</span> Trạng thái đơn</button>
+        <button class="nav-item" onclick="switchTab(2,this);closeSidebarMobile()"><span class="nav-icon">💰</span> Doanh thu</button>
+        <button class="nav-item" onclick="switchTab(3,this);closeSidebarMobile()"><span class="nav-icon">👥</span> Top khách hàng</button>
+        <button class="nav-item" onclick="switchTab(4,this);closeSidebarMobile()"><span class="nav-icon">🚛</span> Chi phí vận chuyển</button>
         <div class="nav-divider"></div>
-        <button class="nav-item" onclick="switchTab(5,this)"><span class="nav-icon">📋</span> Bảng chi tiết</button>
+        <button class="nav-item" onclick="switchTab(5,this);closeSidebarMobile()"><span class="nav-icon">📋</span> Bảng chi tiết</button>
     </div>
     <div class="sidebar-footer">
         <div class="import-section">
@@ -673,7 +754,33 @@ function renderTable(){
 }
 
 function filterTable(){const q=document.getElementById('table-search').value.toLowerCase();let v=0;document.querySelectorAll('#table-body tr').forEach(tr=>{const ok=!q||(tr.dataset.search&&tr.dataset.search.includes(q));tr.style.display=ok?'':'none';if(ok)v++;});document.getElementById('row-count').textContent=v+'/'+currentData.length+' đơn';}
-function switchTab(n,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active');document.querySelectorAll('.nav-item').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('page-title').textContent=tabTitles[n]||'';}
+function switchTab(n,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active');document.querySelectorAll('.sidebar-nav .nav-item').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('page-title').textContent=tabTitles[n]||'';
+    // Sync mobile bottom nav
+    document.querySelectorAll('.mobile-nav-btn').forEach((b,i)=>{b.classList.toggle('active',i===n);});
+}
+function mobileSwitchTab(n,el){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('tab-'+n).classList.add('active');
+    document.querySelectorAll('.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
+    if(el)el.classList.add('active');
+    // Sync sidebar nav
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach((a,i)=>{a.classList.toggle('active',i===n);});
+    document.getElementById('page-title').textContent=tabTitles[n]||'';
+    // Scroll to top
+    document.querySelector('.content').scrollTop=0;
+}
+function toggleSidebar(){
+    const sb=document.querySelector('.sidebar');
+    const ov=document.getElementById('sidebar-overlay');
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+}
+function closeSidebarMobile(){
+    if(window.innerWidth<=768){
+        document.querySelector('.sidebar').classList.remove('open');
+        document.getElementById('sidebar-overlay').classList.remove('show');
+    }
+}
 function exportToExcel(){if(!currentData.length)return;const d=[['STT','Đơn hàng','Ngày nhận','Hạn giao','Trạng thái','SL','Mã hàng/SP','Doanh thu','Chi phí VC','Lợi nhuận']];currentData.forEach(r=>d.push([r.STT,r.orderName,fmtD(r.receiveDate),fmtD(r.deadlineDate),r.status,r.qty,r.productCode,r.revenue,r.cost,r.profit]));const ws=XLSX.utils.aoa_to_sheet(d),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Đơn hàng');XLSX.writeFile(wb,'bao_cao_reunion.xlsx');}
 
 function clearSavedUrl(){try{localStorage.removeItem('reunion_sheet_url');}catch(e){}document.getElementById('sheet-url').value='';setS('🗑️ Đã xoá link lưu sẵn','success');}
