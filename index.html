@@ -191,7 +191,10 @@ tbody td.text-right{text-align:right}
         <div class="import-section">
             <input type="text" id="sheet-url" class="sheet-url-input" placeholder="Dán link Google Sheet đã share...">
             <button class="btn-import btn-primary" onclick="loadFromGoogleSheet()">🔗 Tải từ Google Sheet</button>
-            <label class="btn-import btn-secondary" style="text-align:center">📤 Import file Excel<input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display:none"></label>
+            <div style="display:flex;gap:6px">
+                <label class="btn-import btn-secondary" style="text-align:center;flex:1">📤 Import Excel<input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display:none"></label>
+                <button class="btn-import btn-secondary" style="flex:0 0 auto;padding:10px;font-size:14px" onclick="clearSavedUrl()" title="Xoá link đã lưu">🗑️</button>
+            </div>
             <p id="import-status" class="import-status"></p>
             <div class="auto-refresh-row">
                 <label><span class="toggle-switch"><input type="checkbox" id="auto-refresh-toggle" onchange="toggleAutoRefresh()"><span class="toggle-slider"></span></span> Tự động cập nhật</label>
@@ -201,7 +204,7 @@ tbody td.text-right{text-align:right}
             </div>
             <p id="refresh-timer" class="refresh-timer"></p>
             <div id="debug-panel" class="debug-panel"></div>
-            <div class="import-help"><strong>Hướng dẫn:</strong><br>1. Mở Sheet → Share → Anyone with the link → Viewer<br>2. Copy link & dán vào ô trên<br><em style="color:var(--accent)">✓ Không cần Publish to web!</em></div>
+            <div class="import-help"><strong>Hướng dẫn:</strong><br>1. Dán link Google Sheet lần đầu<br>2. Từ lần sau mở file sẽ <em style="color:var(--accent)">tự động tải</em><br>3. Nhấn 🗑️ để xoá link đã lưu</div>
         </div>
     </div>
 </div>
@@ -376,6 +379,8 @@ function processGvizResult(result,silent){
         XLSX.utils.book_append_sheet(workbook,ws,'Sheet1');
 
         if(!silent)setS('✅ Tải thành công!','success');
+        // Save URL for auto-load next time
+        try{const u=document.getElementById('sheet-url').value.trim();if(u)localStorage.setItem('reunion_sheet_url',u);}catch(e){}
         populateSheetSelector();
         loadSelectedSheet(silent);
     }catch(e){
@@ -671,7 +676,20 @@ function filterTable(){const q=document.getElementById('table-search').value.toL
 function switchTab(n,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active');document.querySelectorAll('.nav-item').forEach(a=>a.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('page-title').textContent=tabTitles[n]||'';}
 function exportToExcel(){if(!currentData.length)return;const d=[['STT','Đơn hàng','Ngày nhận','Hạn giao','Trạng thái','SL','Mã hàng/SP','Doanh thu','Chi phí VC','Lợi nhuận']];currentData.forEach(r=>d.push([r.STT,r.orderName,fmtD(r.receiveDate),fmtD(r.deadlineDate),r.status,r.qty,r.productCode,r.revenue,r.cost,r.profit]));const ws=XLSX.utils.aoa_to_sheet(d),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Đơn hàng');XLSX.writeFile(wb,'bao_cao_reunion.xlsx');}
 
-window.addEventListener('load',()=>{document.getElementById('kpi-container').innerHTML=`<div style="grid-column:1/-1"><div class="placeholder-state"><div class="ph-icon">📊</div><h3>BÁO CÁO KINH DOANH REUNION</h3><p>Dán link Google Sheet (đã share "Anyone with the link") hoặc import file Excel. Bật "Tự động cập nhật" để nhận thông báo đơn mới!</p></div></div>`;});
+function clearSavedUrl(){try{localStorage.removeItem('reunion_sheet_url');}catch(e){}document.getElementById('sheet-url').value='';setS('🗑️ Đã xoá link lưu sẵn','success');}
+
+window.addEventListener('load',()=>{
+    // Try to load saved sheet URL
+    let savedUrl='';
+    try{savedUrl=localStorage.getItem('reunion_sheet_url')||'';}catch(e){}
+    if(savedUrl){
+        document.getElementById('sheet-url').value=savedUrl;
+        // Auto load immediately
+        setTimeout(()=>loadFromGoogleSheet(),300);
+    }else{
+        document.getElementById('kpi-container').innerHTML=`<div style="grid-column:1/-1"><div class="placeholder-state"><div class="ph-icon">📊</div><h3>BÁO CÁO KINH DOANH REUNION</h3><p>Dán link Google Sheet lần đầu — từ lần sau sẽ tự động tải khi mở!</p></div></div>`;
+    }
+});
 </script>
 </body>
 </html>
